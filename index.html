@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <style>
+      .floor { height: 200px; width: 200px }
+      .floor table { height: 100%; width: 100%; }
+      .floor td { width: 4%; height: 4% }
+      .floor td.tile { width: 22%; height: 22%; background: grey }
+      .floor td.wall { background-color: black; }
+    </style>
+    <script type="text/javascript" src="burgle.js"></script>
+  </head>
+  <body>
+    <table>
+      <tr>
+        <td width="220px"><div class="floor" id="f1"></div></td>
+        <td width="220px"><div class="floor" id="f2"></div></td>
+        <td width="220px"><div class="floor" id="f3"></div></td>
+      </tr>
+      <tr>
+        <td align="center"><button onClick="Burgle('f1')">Generate Floor</button></td>
+        <td align="center"><button onClick="Burgle('f2')">Generate Floor</button></td>
+        <td align="center"><button onClick="Burgle('f3')">Generate Floor</button></td>
+      </tr>
+      <tr>
+        <td colspan="3" align="center">
+          <button onClick="Burgle()">Generate All Floors</button>
+        </td>
+      </tr>
+  </body>
+</html>
