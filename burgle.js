@@ -1,3 +1,4 @@
+"use strict";
 var Burgle = (function() {
 
 function initFloors() {
@@ -33,7 +34,7 @@ else window.attachEvent('onload',initFloors); //IE
 
 function toFloor(walls) {
     var i = 0;
-    var floor = Array(17).join(1).split('').map(function(){return {}});
+    var floor = Array(17).join(1).split('').map(function(){return {heat:0}});
     for (var y=0; y<4; y++) {
         for (var x=0; x<3; x++) {
            if (!walls[i]) {
@@ -55,8 +56,7 @@ function toFloor(walls) {
     return floor;
 }
 
-function valid(walls) {
-    var floor = toFloor(walls);
+function valid(floor) {
     var check = [0];
     var visited = 0;
     while (check.length > 0) {
@@ -71,6 +71,86 @@ function valid(walls) {
         if (tile.w) check.push(next - 1);
     }
     return visited === 16;
+}
+
+function update_distance(a_ind, b_ind, dist) {
+    var a = a_ind * 16;
+    var b = b_ind * 16;
+    for (var i=0; i<16; i++) {
+        if (dist[a] < dist[b])
+            dist[b] = dist[a] + 1;
+        else if (dist[b] < dist[a])
+            dist[a] = dist[b] + 1;
+        a++;
+        b++;
+    }
+}
+
+function build_distance(floor) {
+    var dist = Array(257).join(1).split('').map(function(){return 20});
+    for (var i=0; i<16; i++) dist[i * 16 + i] = 0;
+    for (var r=0; r<16; r++) {
+        for (var i=0; i<16; i++) {
+            if (floor[i].n) update_distance(i, i-4, dist);
+            if (floor[i].e) update_distance(i, i+1, dist);
+            if (floor[i].s) update_distance(i, i+4, dist);
+            if (floor[i].w) update_distance(i, i-1, dist);
+        }
+    }
+    return dist;
+}
+
+function find_clockwise(options, to) {
+    for (var i=0; i<options.length; i++) {
+        var dy=1, dx=1;
+        var r = Math.atan2(dy, dx);
+    }
+    return options[0];
+}
+
+function walk(from ,to, floor, dist) {
+    var min, shortest, tile;
+    function look(dir, neighbor) { 
+        var ind = neighbor * 16 + to;
+        if (tile[dir]) {
+            if (dist[ind] < min) {
+                shortest = [neighbor];
+                min = dist[ind];
+            }
+            else if (dist[ind] === min) {
+                shortest.push(neighbor);
+            }
+        }
+    }
+    while (from !== to) {
+        min = 20;
+        tile = floor[from];
+        look('n', from - 4);
+        look('e', from + 1);
+        look('s', from + 4);
+        look('w', from - 1);
+        var next = shortest.length > 1 ? find_clockwise(shortest) : shortest[0];
+        floor[next].heat++;
+        from = next;
+    }
+}
+
+function heatmap(floor) {
+    var dist = build_distance(floor);
+    for (var i=0; i<16; i++) {
+        for (var j=0; j<16; j++) {
+            walk(i, j, floor, dist);
+        }
+    }
+    var heat = [];
+    for (var y=0; y<4; y++) {
+        var r = [];
+        for (var x=0; x<4; x++) {
+            r.push(floor[y*4 + x].heat);
+        }
+        heat.push(r);
+    }
+    console.table(heat);
 }
 
 return function(id) {
@@ -93,7 +173,9 @@ return function(id) {
             for (var w=0; w<24; w++) {
                 document.getElementById(id + '_' + w).className = walls[w] ? 'wall' : '';
             }
-            if (!valid(walls)) continue;
+            var floor = toFloor(walls);
+            if (!valid(floor)) continue;
+            heatmap(floor);
             break;
         }
     }

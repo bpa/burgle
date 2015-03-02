@@ -8,20 +8,30 @@
 
 using namespace std;
 
+typedef int Heat[16];
+typedef char Floor[16];
+typedef int DistMap[256];
+
 struct work {
     int base;
     int left;
     int right;
 };
 
+int heat_min = 1000;
+int heat_min_layout = 0;
+int heat_max = 0;
+int heat_max_layout = 0;
+
 deque<int> configurations;
 set<int> unique_configurations;
 
-void generate() {
+void generate(int walls) {
     int total = 1;
+    int start = (1 << walls) - 1;
     deque<struct work> work_queue;
-    work_queue.push_back({0xFF, 7, 23});
-    configurations.push_back(0xFF);
+    work_queue.push_back({start, walls - 1, 23});
+    configurations.push_back(start);
     while (!work_queue.empty()) {
         struct work next = work_queue.front();
         work_queue.pop_front();
@@ -44,22 +54,22 @@ void generate() {
     cout << total << " configurations found" << endl;
 }
 
-void convert(int floor, char *layout) {
-    memset(layout, 15, 16);
+void convert(int layout, char *floor) {
+    memset(floor, 15, 16);
     for (int y = 0; y < 3; y++) {
         for (int x = 0; x < 4; x++) {
             int y_offset = y * 4 + x;
 
-            if ((floor & (1 << y_offset)) == 0) {
-                char *ind = &layout[y_offset];
+            if ((layout & (1 << y_offset)) == 0) {
+                char *ind = &floor[y_offset];
                 *ind = *ind & (char) 0xB;
                 ind += 4;
                 *ind = *ind & (char) 0xE;
             }
 
             int x_offset = (y + 3) * 4 + x;
-            if ((floor & (1 << x_offset)) == 0) {
-                char *ind = &layout[x * 4 + y];
+            if ((layout & (1 << x_offset)) == 0) {
+                char *ind = &floor[x * 4 + y];
                 *ind = *ind & (char) 0xD;
                 ind++;
                 *ind = *ind & (char) 0x7;
@@ -88,7 +98,7 @@ inline int rotate(int layout) {
     return rotated;
 }
 
-void print_floor(char *floor) {
+void print_floor(Floor &floor) {
     for (int y = 0; y < 4; y++) {
         for (int x = 0; x < 4; x++) {
             switch (floor[y * 4 + x] & 0b1011) {
@@ -136,12 +146,13 @@ void print_floor(char *floor) {
 }
 
 void print_layout(int layout) {
-    char floor[16];
-    convert(layout, &floor[0]);
-    print_floor(&floor[0]);
+    Floor floor;
+    convert(layout, floor);
+    print_floor(floor);
 }
 
 void remove_duplicates() {
+    unique_configurations.clear();
     while (!configurations.empty()) {
         int next = configurations.front();
         configurations.pop_front();
@@ -159,6 +170,91 @@ void remove_duplicates() {
     cout << unique_configurations.size() << " unique configurations found" << endl;
 }
 
+void update_distance(int a_ind, int b_ind, DistMap &dist) {
+    int *a = &dist[a_ind * 16];
+    int *b = &dist[b_ind * 16];
+    for (int i = 0; i < 16; i++) {
+        if (*a < *b)
+            *b = *a + 1;
+        else if (*b < *a)
+            *a = *b + 1;
+        a++;
+        b++;
+    }
+}
+
+void build_distance(Floor &floor, DistMap &dist) {
+    for (int i = 0; i < 16; i++) dist[i * 16 + i] = 0;
+    for (int r = 0; r < 16; r++) {
+        for (int i = 0; i < 16; i++) {
+            if ((floor[i] & 1) == 0) update_distance(i, i - 4, dist);
+            if ((floor[i] & 2) == 0) update_distance(i, i + 1, dist);
+            if ((floor[i] & 4) == 0) update_distance(i, i + 4, dist);
+            if ((floor[i] & 8) == 0) update_distance(i, i - 1, dist);
+        }
+    }
+}
+
+void look(char tile, int dir, int neighbor, int to, DistMap &dist, deque<int> &shortest, int &min) {
+    int ind = neighbor * 16 + to;
+    if ((tile & dir) == 0) {
+        if (dist[ind] < min) {
+            shortest.clear();
+            shortest.push_back(neighbor);
+            min = dist[ind];
+        } else if (dist[ind] == min) {
+            shortest.push_back(neighbor);
+        }
+    }
+}
+
+int find_clockwise(deque<int> &shortest) {
+    return shortest.front();
+}
+
+void walk(int from, int to, Floor &floor, DistMap &dist, Heat &heat) {
+    int min;
+    char tile;
+    deque<int> shortest;
+    while (from != to) {
+        min = 20;
+        tile = floor[from];
+        look(tile, 1, from - 4, to, dist, shortest, min);
+        look(tile, 2, from + 1, to, dist, shortest, min);
+        look(tile, 4, from + 4, to, dist, shortest, min);
+        look(tile, 8, from - 1, to, dist, shortest, min);
+        int next = shortest.size() > 1 ? find_clockwise(shortest) : shortest[0];
+        heat[next]++;
+        from = next;
+    }
+}
+
+void generate_heatmap(int layout, Floor &floor) {
+    DistMap distance;
+    for (int i = 0; i < 256; i++) {
+        distance[i] = 20;
+    }
+
+    Heat heat;
+    for (int i = 0; i < 16; i++) {
+        heat[i] = 0;
+    }
+
+    build_distance(floor, distance);
+    for (int i = 0; i < 16; i++) {
+        for (int j = 0; j < 16; j++) {
+            walk(i, j, floor, distance, heat);
+        }
+    }
+    
+    for (int i = 0; i < 16; i++) {
+        if (heat[i] > heat_max) {
+            heat_max = heat[i];
+            heat_max_layout = layout;
+        }
+    }
+}
+
 void remove_invalid() {
     int valid = 0;
     deque<int> tiles;
@@ -166,7 +262,7 @@ void remove_invalid() {
     for (auto f : unique_configurations) {
         int visited = 0;
         convert(f, &layout[0]);
-//        print_floor(&layout[0]);
+        //        print_floor(&layout[0]);
         tiles.push_front(0);
         while (!tiles.empty()) {
             int next = tiles.front();
@@ -180,20 +276,19 @@ void remove_invalid() {
             if ((tile & 8) == 0) tiles.push_front(next - 1);
             visited++;
         }
-        if (visited == 16) valid++;
+        if (visited == 16) {
+            valid++;
+            generate_heatmap(f, layout);
+        }
     }
     cout << valid << " valid unique configurations found" << endl;
 }
 
 int main(int argc, char** argv) {
-    generate();
+    generate(8);
     remove_duplicates();
     remove_invalid();
-    //    int floor = 0b0110011001010100001000000000;
-    //    int floor = 0xF0;
-    //    print_layout(floor);
-    //    floor = mirror(floor);
-    //    print_layout(floor);
+    cout << "Hottest tile: " << heat_max << endl;
+    print_layout(heat_max_layout);
     return 0;
 }
-
