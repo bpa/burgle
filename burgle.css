@@ -5,7 +5,7 @@
 .floor td.tile {
 	width: 22%;
 	height: 22%;
-	background: grey;
+	background: #c0c0c0;
 	border: 1px solid grey;
 	border-radius: 5px;
 	box-shadow: 1px 1px 1px;

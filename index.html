@@ -6,17 +6,22 @@
   <body>
     <div style="float: left; margin: 10; width: 200px">
       <div class="floor" id="f1"></div>
-      <button class="center" onClick="Burgle('f1')">Generate Floor</button>
+      <button class="center" onClick="Burgle.generate('f1')">Generate Floor</button>
     </div>
     <div style="float: left; margin: 10; width: 200px">
       <div class="floor" id="f2"></div>
-      <button class="center" onClick="Burgle('f2')">Generate Floor</button>
+      <button class="center" onClick="Burgle.generate('f2')">Generate Floor</button>
     </div>
     <div style="float: left; margin: 10; width: 200px">
       <div class="floor" id="f3"></div>
-      <button class="center" onClick="Burgle('f3')">Generate Floor</button>
+      <button class="center" onClick="Burgle.generate('f3')">Generate Floor</button>
     </div>
     <br clear="all">
-    <button onClick="Burgle()">Generate All Floors</button>
+    <div id="burgle_ctrl">
+      <label for="burgle_heat">Show Heatmap?</label>
+      <input id="burgle_heat" type="checkbox" onClick="Burgle.show_heat(this.checked)"><br>
+      <button onClick="Burgle.generate()">Generate All Floors</button><br>
+      <a id="burgle_href" href="#">Permalink to current layout</a>
+    </div>
   </body>
 </html>
