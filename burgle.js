@@ -133,8 +133,8 @@ var Burgle = (function () {
             }
         }
         for (var i = 0; i< 16; i++) {
-            var heat = Math.floor((floor[i].heat - 15) / 28);
-            document.getElementById(id + '_t' + i).className = "tile h" + heat;
+            var heat = (1.0 - (floor[i].heat - 15) / 168) * 240;
+            document.getElementById(id + '_t' + i).style.backgroundColor = 'hsl(' + heat + ',100%,50%)';
         }
         var heat = [];
         for (var y = 0; y < 4; y++) {
@@ -145,6 +145,11 @@ var Burgle = (function () {
             heat.push(r);
         }
         console.table(heat);
+		var total_heat = 0;
+		for (var i=0; i<16; i++) {
+			total_heat += floor[i].heat;
+		}
+		console.log(total_heat);
     }
 
     function set_layout(id, layout) {

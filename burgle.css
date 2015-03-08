@@ -1,12 +1,13 @@
+.center { margin-left: auto; margin-right: auto; width: 100% }
 .floor { height: 200px; width: 200px }
 .floor table { height: 100%; width: 100%; }
 .floor td { width: 4%; height: 4% }
-.floor td.tile { width: 22%; height: 22%; background: grey }
-.floor td.wall { background-color: black; }
-.floor td.tile.h0 { background: #06F; } /* dark blue */
-.floor td.tile.h1 { background: #69F; } /* blue */
-.floor td.tile.h2 { background: #3F3; } /* light green */
-.floor td.tile.h3 { background: #FF3; } /* yellow */
-.floor td.tile.h4 { background: #F60; } /* orange */
-.floor td.tile.h5 { background: #F00; } /* red */
-.floor td.tile.h6 { background: #F00; } /* red */
+.floor td.tile {
+	width: 22%;
+	height: 22%;
+	background: grey;
+	border: 1px solid grey;
+	border-radius: 5px;
+	box-shadow: 1px 1px 1px;
+}
+.floor td.wall { background-color: black; box-shadow: 1px 1px 1px grey;}

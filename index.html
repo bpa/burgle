@@ -4,21 +4,19 @@
     <script type="text/javascript" src="burgle.js"></script>
   </head>
   <body>
-    <table>
-      <tr>
-        <td width="220px"><div class="floor" id="f1"></div></td>
-        <td width="220px"><div class="floor" id="f2"></div></td>
-        <td width="220px"><div class="floor" id="f3"></div></td>
-      </tr>
-      <tr>
-        <td align="center"><button onClick="Burgle('f1')">Generate Floor</button></td>
-        <td align="center"><button onClick="Burgle('f2')">Generate Floor</button></td>
-        <td align="center"><button onClick="Burgle('f3')">Generate Floor</button></td>
-      </tr>
-      <tr>
-        <td colspan="3" align="center">
-          <button onClick="Burgle()">Generate All Floors</button>
-        </td>
-      </tr>
+    <div style="float: left; margin: 10; width: 200px">
+      <div class="floor" id="f1"></div>
+      <button class="center" onClick="Burgle('f1')">Generate Floor</button>
+    </div>
+    <div style="float: left; margin: 10; width: 200px">
+      <div class="floor" id="f2"></div>
+      <button class="center" onClick="Burgle('f2')">Generate Floor</button>
+    </div>
+    <div style="float: left; margin: 10; width: 200px">
+      <div class="floor" id="f3"></div>
+      <button class="center" onClick="Burgle('f3')">Generate Floor</button>
+    </div>
+    <br clear="all">
+    <button onClick="Burgle()">Generate All Floors</button>
   </body>
 </html>
