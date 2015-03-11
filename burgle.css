@@ -11,3 +11,4 @@
 	box-shadow: 1px 1px 1px;
 }
 .floor td.wall { background-color: black; box-shadow: 1px 1px 1px grey;}
+button { padding: 1em; margin: .5em; }

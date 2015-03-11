@@ -1,4 +1,10 @@
 "use strict";
+
+function send(b, id, event) {
+    if (event.toElement === b)
+        document.getElementById(id).click();
+}
+
 var Burgle = (function () {
     var show_heat = false;
 
