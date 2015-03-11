@@ -18,9 +18,12 @@
     </div>
     <br clear="all">
     <div id="burgle_ctrl">
+      <button onClick="send(this, 'burgle_heat', event)">
       <label for="burgle_heat">Show Heatmap?</label>
-      <input id="burgle_heat" type="checkbox" onClick="Burgle.show_heat(this.checked)"><br>
-      <button onClick="Burgle.generate()">Generate All Floors</button><br>
+        <input id="burgle_heat" type="checkbox" onClick="Burgle.show_heat(this.checked)">
+      </button>
+      <button onClick="Burgle.generate()">Generate All Floors</button>
+      <br><br>
       <a id="burgle_href" href="#">Permalink to current layout</a>
     </div>
   </body>
