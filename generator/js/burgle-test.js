@@ -48,11 +48,11 @@ var Burgle = (function () {
             visited++;
             tile.v = true;
             if (tile.n)
-                check.push(next - 4);
+                check.push(next - 5);
             if (tile.e)
                 check.push(next + 1);
             if (tile.s)
-                check.push(next + 4);
+                check.push(next + 5);
             if (tile.w)
                 check.push(next - 1);
         }
@@ -81,11 +81,11 @@ var Burgle = (function () {
         for (var r = 0; r < 25; r++) {
             for (i = 0; i < 25; i++) {
                 if (floor[i].n)
-                    update_distance(i, i - 4, dist);
+                    update_distance(i, i - 5, dist);
                 if (floor[i].e)
                     update_distance(i, i + 1, dist);
                 if (floor[i].s)
-                    update_distance(i, i + 4, dist);
+                    update_distance(i, i + 5, dist);
                 if (floor[i].w)
                     update_distance(i, i - 1, dist);
             }
@@ -131,9 +131,9 @@ var Burgle = (function () {
         while (from !== to) {
             min = 50;
             tile = floor[from];
-            look('n', from - 4, Math.PI * -.5);
+            look('n', from - 5, Math.PI * -.5);
             look('e', from + 1, 0);
-            look('s', from + 4, Math.PI * .5);
+            look('s', from + 5, Math.PI * .5);
             look('w', from - 1, Math.PI);
             var next = shortest.length > 1 ? find_clockwise(from, to, shortest) : shortest[0][1];
             floor[next].heat++;
@@ -145,6 +145,7 @@ var Burgle = (function () {
         var i, j, heat = [];
         if (!show_heat) {
             for (i = 0; i < 25; i++) {
+				console.log(i);
                 document.getElementById(id + '_t' + i).style.backgroundColor = '';
             }
             return;
@@ -157,7 +158,7 @@ var Burgle = (function () {
             }
         }
         for (i = 0; i < 25; i++) {
-            heat = (1.0 - (floor[i].heat - 24) / 168) * 240;
+            heat = (1.0 - (floor[i].heat - 24) / 350) * 240;
             document.getElementById(id + '_t' + i).style.backgroundColor = 'hsl(' + heat + ',100%,50%)';
         }
         heat = [];
@@ -217,16 +218,16 @@ var Burgle = (function () {
                 floor.setAttribute('id', id);
             }
             var table = document.createElement('table');
-            var wall = 0;
+            var wall = 0, tile = 0;
             for (var i = 0; i < 9; i++) {
                 var row = document.createElement('tr');
                 for (var j = 0; j < 9; j++) {
                     var td = document.createElement('td');
                     if (i % 2 === 0 && j % 2 === 0) {
                         td.className = 'tile';
-                        td.setAttribute('id', id + '_t' + (i * 2 + (j / 2)));
+                        td.setAttribute('id', id + '_t' + tile++);
                     }
-                    if (i % 2 === 0 ? j % 2 != 0 : j % 2 === 0)
+                    if (i % 2 === 0 ? j % 2 !== 0 : j % 2 === 0)
                         td.setAttribute('id', id + '_' + wall++);
                     row.appendChild(td);
                 }
