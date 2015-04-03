@@ -1,27 +1,22 @@
 "use strict";
 
-function send(b, id, event) {
-    if (event.toElement === b)
-        document.getElementById(id).click();
-}
-
 var Burgle = (function () {
     var show_heat = false;
 
     function getParameterByName(name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(location.search);
+            results = regex.exec(location.search);
         return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
     }
 
     function to_floor(walls) {
-        var i = 0;
-        var floor = Array(17).join(1).split('').map(function () {
+        var i = 0, x = 0;
+        var floor = new Array(17).join(1).split('').map(function () {
             return {heat: 0}
         });
         for (var y = 0; y < 4; y++) {
-            for (var x = 0; x < 3; x++) {
+            for (x = 0; x < 3; x++) {
                 if (!walls[i]) {
                     floor[y * 4 + x].e = true;
                     floor[y * 4 + x + 1].w = true;
@@ -29,7 +24,7 @@ var Burgle = (function () {
                 i++;
             }
             if (y < 3) {
-                for (var x = 0; x < 4; x++) {
+                for (x = 0; x < 4; x++) {
                     if (!walls[i]) {
                         floor[y * 4 + x].s = true;
                         floor[(y + 1) * 4 + x].n = true;
@@ -77,13 +72,13 @@ var Burgle = (function () {
     }
 
     function build_distance(floor) {
-        var dist = Array(257).join(1).split('').map(function () {
+        var i, dist = new Array(257).join(1).split('').map(function () {
             return 20
         });
-        for (var i = 0; i < 16; i++)
+        for (i = 0; i < 16; i++)
             dist[i * 16 + i] = 0;
         for (var r = 0; r < 16; r++) {
-            for (var i = 0; i < 16; i++) {
+            for (i = 0; i < 16; i++) {
                 if (floor[i].n)
                     update_distance(i, i - 4, dist);
                 if (floor[i].e)
@@ -117,7 +112,8 @@ var Burgle = (function () {
     }
 
     function walk(from, to, floor, dist) {
-        var min, shortest, tile;
+        var min, shortest=[], tile;
+
         function look(dir, neighbor, r) {
             var ind = neighbor * 16 + to;
             if (tile[dir]) {
@@ -130,6 +126,7 @@ var Burgle = (function () {
                 }
             }
         }
+
         while (from !== to) {
             min = 20;
             tile = floor[from];
@@ -144,24 +141,25 @@ var Burgle = (function () {
     }
 
     function heatmap(id, floor) {
+        var i, j, heat = [];
         if (!show_heat) {
-            for (var i = 0; i < 16; i++) {
+            for (i = 0; i < 16; i++) {
                 document.getElementById(id + '_t' + i).style.backgroundColor = '';
             }
             return;
         }
 
         var dist = build_distance(floor);
-        for (var i = 0; i < 16; i++) {
-            for (var j = 0; j < 16; j++) {
+        for (i = 0; i < 16; i++) {
+            for (j = 0; j < 16; j++) {
                 walk(i, j, floor, dist);
             }
         }
-        for (var i = 0; i < 16; i++) {
-            var heat = (1.0 - (floor[i].heat - 15) / 168) * 240;
+        for (i = 0; i < 16; i++) {
+            heat = (1.0 - (floor[i].heat - 15) / 168) * 240;
             document.getElementById(id + '_t' + i).style.backgroundColor = 'hsl(' + heat + ',100%,50%)';
         }
-        var heat = [];
+        heat = [];
         for (var y = 0; y < 4; y++) {
             var r = [];
             for (var x = 0; x < 4; x++) {
@@ -169,12 +167,10 @@ var Burgle = (function () {
             }
             heat.push(r);
         }
-        console.table(heat);
         var total_heat = 0;
-        for (var i = 0; i < 16; i++) {
+        for ( i = 0; i < 16; i++) {
             total_heat += floor[i].heat;
         }
-        console.log(total_heat);
     }
 
     function as_walls(layout) {
@@ -257,8 +253,6 @@ var Burgle = (function () {
         for (var f = 0; f < floors.length; f++) {
             layouts.push(floors[f].getAttribute('id') + '=' + floors[f].getAttribute('layout'));
         }
-        console.log(link);
-
         document.getElementById('burgle_href').href = link + layouts.join('&');
     }
 
@@ -270,6 +264,13 @@ var Burgle = (function () {
     return {
         show_heat: function (show) {
             show_heat = show;
+            if (show_heat) {
+                document.getElementById('show_heatmap').setAttribute('class', 'hidden');
+                document.getElementById('hide_heatmap').removeAttribute('class');
+            } else {
+                document.getElementById('hide_heatmap').setAttribute('class', 'hidden');
+                document.getElementById('show_heatmap').removeAttribute('class');
+            }
             var floors = document.getElementsByClassName("floor");
             for (var f = 0; f < floors.length; f++) {
                 var layout = floors[f].getAttribute('layout');
@@ -289,7 +290,7 @@ var Burgle = (function () {
                 while (true) {
                     var walls = [];
                     var layout = 0;
-                    for (var w = 0; w < 8; ) {
+                    for (var w = 0; w < 8;) {
                         var n = Math.floor(Math.random() * 24);
                         if (!walls[n]) {
                             w++;
