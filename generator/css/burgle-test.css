@@ -35,6 +35,12 @@ a, a:visited, a:hover {
 	height: 2%
 }
 
+.floor td.shaft {
+	width: 18%;
+	height: 18%;
+	background: #000;
+}
+
 .floor td.tile {
 	width: 18%;
 	height: 18%;
