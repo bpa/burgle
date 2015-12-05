@@ -18,7 +18,7 @@ struct work {
     int right;
 };
 
-int heat_min = 1000;
+int heat_min = 2000;
 int heat_min_layout = 0;
 int heat_max = 0;
 int heat_max_layout = 0;
@@ -229,6 +229,24 @@ void walk(int from, int to, Floor &floor, DistMap &dist, Heat &heat) {
     }
 }
 
+int asJs(int layout) {
+    int link = layout & 0x804000;
+    link |= ((layout & 0xF) << 3);
+    link |= ((layout & 0xF0) << 6);
+    link |= ((layout & 0xF00) << 9);
+    link |= ((layout & 0x1000) >> 12);
+    link |= ((layout & 0x2000) >> 6);
+    link |= ((layout & 0x8000) << 6);
+    link |= ((layout & 0x10000) >> 15);
+    link |= ((layout & 0x20000) >> 9);
+    link |= ((layout & 0x40000) >> 3);
+    link |= ((layout & 0x80000) << 3);
+    link |= ((layout & 0x100000) >> 18);
+    link |= ((layout & 0x200000) >> 12);
+    link |= ((layout & 0x400000) >> 6);
+    return link;
+}
+
 void generate_heatmap(int layout, Floor &floor) {
     DistMap distance;
     for (int i = 0; i < 256; i++) {
@@ -246,12 +264,18 @@ void generate_heatmap(int layout, Floor &floor) {
             walk(i, j, floor, distance, heat);
         }
     }
-    
+
+    int heat_sum = 0;
     for (int i = 0; i < 16; i++) {
-        if (heat[i] > heat_max) {
-            heat_max = heat[i];
-            heat_max_layout = layout;
-        }
+        heat_sum += heat[i];
+    }
+    if (heat_sum > heat_max) {
+        heat_max = heat_sum;
+        heat_max_layout = layout;
+    }
+    if (heat_sum < heat_min) {
+        heat_min = heat_sum;
+        heat_min_layout = layout;
     }
 }
 
@@ -286,9 +310,12 @@ void remove_invalid() {
 
 int main(int argc, char** argv) {
     generate(8);
+//    configurations.push_back(0x456844);
     remove_duplicates();
     remove_invalid();
-    cout << "Hottest tile: " << heat_max << endl;
+    cout << "Hottest floor: " << heat_max << " #" << hex << asJs(heat_max_layout) << dec << endl;
     print_layout(heat_max_layout);
+    cout << "Coldest floor: " << heat_min << " #" << hex << asJs(heat_min_layout) << dec << endl;
+    print_layout(heat_min_layout);
     return 0;
 }
