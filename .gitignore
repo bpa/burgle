@@ -1,0 +1,14 @@
+# grunt
+node_modules
+.npm-debug.log
+tmp
+coverage
+dist
+
+# vim
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
