@@ -1,11 +1,11 @@
 "use strict";
 
-var show_heat = false;
-var floors  = 3;
-var size    = 4;
-var size_sq = 16;
-var walls   = 8;
-var pillar  = undefined;
+var heatmap = false,
+    floors  = 3,
+    size    = 4,
+    size_sq = 16,
+    walls   = 8,
+    pillar;
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -27,7 +27,7 @@ function as_walls(layout) {
 
 function to_floor(walls) {
     var i = 0, x = 0;
-    var floor = new Array(size * size + 1).join(1).split('').map(function () {
+    var floor = new Array(size_sq + 1).join(1).split('').map(function () {
         return {heat: 0}
     });
     for (var y = 0; y < size; y++) {
@@ -158,9 +158,9 @@ function walk(from, to, floor, dist) {
     }
 }
 
-function heatmap(id, floor) {
+function generate_heatmap(id, floor) {
     var i, j, heat = [];
-    if (!show_heat) {
+    if (!heatmap) {
         for (i = 0; i < size_sq; i++) {
             document.getElementById(id + '_t' + i).style.backgroundColor = '';
         }
@@ -202,7 +202,7 @@ function set_layout(id, layout, walls) {
     for (var w = 0; w < size * (size - 1) * 2; w++) {
         document.getElementById(id + '_' + w).className = walls[w] ? 'wall' : '';
     }
-    heatmap(id, floor);
+    generate_heatmap(id, floor);
     return true;
 }
 
@@ -210,35 +210,28 @@ function init() {
     var j = getParameterByName('job');
     if (j !== "") document.getElementById('job').options[j].selected = true;
     if (getParameterByName('heat') !== "") {
-        show_heat = true;
+        heatmap = true;
         var heat = document.getElementById('burgle_heat');
-        if (heat !== null) heat.checked = show_heat;
+        if (heat !== null) heat.checked = heatmap;
     }
     new_job();
 }
 
 function update_dom() {
+	var floorElem = document.getElementById("floors");
+	while (floorElem.lastChild) {
+		floorElem.removeChild(floorElem.lastChild);
+	}
 
-//<div class="floorContainer">
-//    <div class="floor" id="f1"></div>
-//    <button class="center" onClick="Burgle.generate('f1')">Generate 1. Floor</button>
-//</div>
-
-    for (var f = 0; f < floors; f++) {
-        
-    }
-    var floors = document.getElementsByClassName("floors");
     var cols = size * 2 - 1;
-    for (var f = 0; f < floors.length; f++) {
-        var floor = floors[f];
-        var id = floor.getAttribute('id');
-        if (id === null) {
-            id = 'floor' + f;
-            while (document.getElementById(id) !== null) {
-                id = id + '0';
-            }
-            floor.setAttribute('id', id);
-        }
+    for (var f = 0; f < floors; f++) {
+		var id = 'f' + f;
+		var container = document.createElement('div');
+		container.setAttribute('class', 'floorContainer');
+
+        var floor = document.createElement('div');
+		floor.setAttribute('class', 'floor');
+		floor.setAttribute('id', id);
         var table = document.createElement('table');
         var wall = 0;
         for (var i = 0; i < cols; i++) {
@@ -256,6 +249,16 @@ function update_dom() {
             table.appendChild(row);
         }
         floor.appendChild(table);
+
+		var btn = document.createElement('button');
+		btn.setAttribute('class', 'center');
+		btn.setAttribute('onClick', "generate('f" + f + "')");
+		btn.appendChild(document.createTextNode("Generate " + (f + 1) + ". Floor"));
+
+		container.appendChild(floor);
+		container.appendChild(btn);
+		floorElem.appendChild(container);
+
         var layout = parseInt(getParameterByName(id), size_sq);
         if (layout > 0 && set_layout(id, layout))
             floor.setAttribute('layout', layout.toString(size_sq));
@@ -270,7 +273,7 @@ function update_href() {
         link += ':' + window.location.port;
     link += window.location.pathname + '?job=';
     link += document.getElementById('job').selectedIndex;
-    if (show_heat)
+    if (heatmap)
         link += 'heat=on&';
 
     var layouts = [];
@@ -318,8 +321,8 @@ function new_job() {
 }
 
 function show_heat(show) {
-    show_heat = show;
-    if (show_heat) {
+    heatmap = show;
+    if (heatmap) {
         document.getElementById('show_heatmap').setAttribute('class', 'hidden');
         document.getElementById('hide_heatmap').removeAttribute('class');
     } else {
@@ -335,3 +338,8 @@ function show_heat(show) {
     }
     update_href();
 }
+
+if (window.addEventListener)
+    window.addEventListener('load', update_dom, false);
+else
+    window.attachEvent('onload', update_dom); //IE

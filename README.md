@@ -6,25 +6,28 @@ Collection of tools and utilities to help gameplay for Burgle Brothers&copy; by 
 The primary purpose of this project.  Assists play by generating floors for games.
 Aiming for pure javascript with no dependencies.  Thanks to a contribution (I'll get your name from Tim, I promise) from another player/developer, this can be installed as an app on your phone.
 
-### Building
+### Running
+I'm able to just open the index.html found in the base directory.  If that doesn't work, try nodejs:
+```bash
+> npm install -g http-server
+> http-server
+```
+
+Then open your browser to http://localhost:8080
+
+### Test/Deploy
+Grunt is used for testing and deployment.  If you don't have nodejs and/or grunt set up, first install [nodejs](https://nodejs.org/en/download/), then run:
 ```bash
 > npm install -g grunt-cli
 > npm install
 > grunt 
 ```
+This will create a dist directory containing only the files you need for the html5 app to work.
 
 ### Testing
 ```bash
 > grunt test
 ```
-
-### Running
-I'm able to just open the index.html found in the dist directory after build.  If that doesn't work, try:
-```bash
-> npm install -g http-server
-> http-server dist
-```
-Then open your browser to http://localhost:8080
 
 ## layout_stats - Calcuating difficulty ##
 This contains is a single c++ program that brute forces all the possible layouts.  It isn't part of the project

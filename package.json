@@ -3,13 +3,11 @@
   "version": "1.0.1",
   "devDependencies": {
     "grunt": "^0.4.5",
-    "grunt-cli": "^0.1.13",
     "grunt-contrib-copy": "^0.8.2",
     "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-nodeunit": "~0.4.1",
     "grunt-contrib-uglify": "^0.5.1",
-    "grunt-js-test": "^1.5.10",
-    "grunt-writefile": "^0.1.2"
+    "grunt-js-test": "^1.5.10"
   },
   "description": "Burgle Bros game layout generator",
   "main": "Gruntfile.js",
@@ -17,8 +15,7 @@
     "grunt-contrib-uglify": "^0.5.1",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt": "^0.4.5",
-    "grunt-contrib-nodeunit": "^0.4.1",
-    "lodash": "^3.10.1"
+    "grunt-contrib-nodeunit": "^0.4.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
