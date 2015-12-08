@@ -1,4 +1,3 @@
-require('glob');
 module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -14,6 +13,7 @@ module.exports = function(grunt) {
                 { src: ['*.ico'], dest: 'dist/', cwd: 'img', expand: true },
                 { src: ['css/*'], dest: 'dist/' },
                 { src: ['index.html'], dest: 'dist/' },
+                { src: ['cache.manifest'], dest: 'dist/' },
             ]
         }
     },
@@ -28,7 +28,7 @@ module.exports = function(grunt) {
         },
         js: {
             src: 'js/burgle.js.hbs',
-            dest: 'dist/burgle.js'
+            dest: 'dist/js/burgle.js'
         }
     },
     uglify: {
@@ -36,8 +36,8 @@ module.exports = function(grunt) {
         banner: '/*! burgle.js <%= grunt.template.today("yyyy-mm-dd") %> Github: https://github.com/bpa/burgle.git */\n'
       },
       build: {
-        src: 'dist/burgle.js',
-        dest: 'dist/burgle.min.js'
+        src: 'dist/js/burgle.js',
+        dest: 'dist/js/burgle.min.js'
       }
     }
   });
