@@ -18,4 +18,10 @@ describe('find_clockwise', function() {
     it("should go s when traveling SW", function() {
         assert.equal(find_clockwise(2, 4, [[w, 1],[s, 5]]), 5);
     });
+    it("should go w when traveling NW", function() {
+        assert.equal(find_clockwise(8, 4, [[n, 5],[w, 7]]), 7);
+    });
+    it("should go r when traveling NE", function() {
+        assert.equal(find_clockwise(6, 4, [[n, 3],[e, 7]]), 3);
+    });
 });

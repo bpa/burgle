@@ -114,15 +114,15 @@ function find_clockwise(from, to, options) {
     var dy = Math.floor(to / size) - Math.floor(from / size);
     var dx = to % size - from % size;
     var target = Math.atan2(dy, dx);
-    var min = 7;
+    var max = 0;
     var dir;
     for (var i = 0; i < options.length; i++) {
         var o = options[i];
         var r = o[0] - target;
         if (r < 0)
             r += 2 * Math.PI;
-        if (r < min) {
-            min = r;
+        if (r > max) {
+            max = r;
             dir = o[1];
         }
     }
