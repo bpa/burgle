@@ -5,7 +5,7 @@ var heatmap = false,
     size    = 4,
     size_sq = 16,
     walls   = 8,
-    pillar;
+    pillar  = -1;
 
 function getParameterByName(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -240,7 +240,7 @@ function update_dom() {
                 var td = document.createElement('td');
                 if (i % 2 === 0 && j % 2 === 0) {
                     td.className = 'tile';
-                    td.setAttribute('id', id + '_t' + (i * 2 + (j / 2)));
+                    td.setAttribute('id', id + '_t' + (i / 2 * size + (j / 2)));
                 }
                 if (i % 2 === 0 ? j % 2 != 0 : j % 2 === 0)
                     td.setAttribute('id', id + '_' + wall++);
@@ -284,25 +284,26 @@ function update_href() {
     document.getElementById('burgle_href').href = link + layouts.join('&');
 }
 
-function generate(id, size) {
+function generate(id) {
     var floors;
+    var max = 2 * size * (size - 1);
     if (id === undefined || id === 'all')
         floors = document.getElementsByClassName("floor");
     else
         floors = [document.getElementById(id)];
     for (var f = 0; f < floors.length; f++) {
         while (true) {
-            var walls = [];
+            var wall = [];
             var layout = 0;
             for (var w = 0; w < walls;) {
-                var n = Math.floor(Math.random() * 24);
-                if (!walls[n]) {
+                var n = Math.floor(Math.random() * max);
+                if (!wall[n]) {
                     w++;
-                    walls[n] = true;
+                    wall[n] = true;
                     layout |= 1 << n;
                 }
             }
-            if (set_layout(floors[f].getAttribute('id'), layout, walls)) {
+            if (set_layout(floors[f].getAttribute('id'), layout, wall)) {
                 break;
             }
         }
@@ -338,8 +339,3 @@ function show_heat(show) {
     }
     update_href();
 }
-
-if (window.addEventListener)
-    window.addEventListener('load', update_dom, false);
-else
-    window.attachEvent('onload', update_dom); //IE

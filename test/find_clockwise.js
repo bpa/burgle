@@ -1,7 +1,5 @@
 /// <reference path="../js/burgle.js" />
 
-var assert = chai.assert;
-
 size = 3;
 // 0 1 2   -π/2
 // 3 4 5  π  ⟡  0
@@ -23,5 +21,5 @@ describe('find_clockwise', function() {
     });
     it("should go r when traveling NE", function() {
         assert.equal(find_clockwise(6, 4, [[n, 3],[e, 7]]), 3);
-    });
+    })
 });

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Mocha</title>
+    <link rel="stylesheet" href="node_modules/grunt-js-test/node_modules/mocha/mocha.css">
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <script src="node_modules/grunt-js-test/node_modules/mocha/mocha.js"></script>
+    <script src="node_modules/grunt-js-test/node_modules/chai/chai.js"></script>
+    <script>mocha.setup('bdd')</script>
+    <script>assert = chai.assert</script>
+    <script src="js/burgle.js"></script>
+    <script src="test/find_clockwise.js"></script>
+    <script>
+      mocha.run();
+    </script>
+  </body>
+</html>
+
