@@ -15,19 +15,22 @@ I'm able to just open the index.html found in the base directory.  If that doesn
 
 Then open your browser to http://localhost:8080
 
-### Test/Deploy
-Grunt is used for testing and deployment.  If you don't have nodejs and/or grunt set up, first install [nodejs](https://nodejs.org/en/download/), then run:
+### Testing
+Mocha is used for testing.  If you don't have nodejs and mocha set up, first install [nodejs](https://nodejs.org/en/download/), then run:
 ```bash
-> npm install -g grunt-cli
+> npm install -g mocha
 > npm install
-> grunt 
+> mocha 
+```
+I tried using grunt at first, but it was painfully slow.  Using mocha directly is really fast.
+
+### Deployment
+Deployment is really nothing more than creating a dist directory and minimizing javascript.  The project works out of the checked out directory with no build,
+so you can make changes and refresh without having to build first.
+```bash
+> grunt
 ```
 This will create a dist directory containing only the files you need for the html5 app to work.
-
-### Testing
-```bash
-> grunt test
-```
 
 ## layout_stats - Calcuating difficulty ##
 This contains is a single c++ program that brute forces all the possible layouts.  It isn't part of the project

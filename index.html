@@ -21,8 +21,8 @@
   <link rel="stylesheet" type="text/css" href="css/burgle.css">
   <script type="text/javascript" src="js/burgle.js"></script>
 </head>
-<body onLoad="update_dom()">
-  <select id="job" onChange="new_job()">
+<body onLoad="Burgle.init()">
+  <select id="job" onChange="Burgle.new_job()">
     <option value="3:4:8">The Bank Job (Standard)</option>
     <option value="2:4:8">The Office Job (Intro)</option>
     <option value="2:5:12">Fort Knox (Expert)</option>
@@ -30,9 +30,9 @@
   <div id="floors"></div>
   <br clear="all">
   <div id="burgle_ctrl">
-    <button onClick="generate()">Generate All Floors</button><br>
-    <button id="show_heatmap" onClick="show_heat(true)">Show Heatmap</button>
-    <button id="hide_heatmap" class="hidden" onClick="show_heat(false)">Hide Heatmap</button>
+    <button onClick="Burgle.generate()">Generate All Floors</button><br>
+    <button id="show_heatmap" onClick="Burgle.show_heat(true)">Show Heatmap</button>
+    <button id="hide_heatmap" class="hidden" onClick="Burgle.show_heat(false)">Hide Heatmap</button>
     <br>
     <br>
     <a id="burgle_href" href="#">Permalink to current layout</a>
