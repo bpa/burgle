@@ -15,13 +15,33 @@ var Burgle = (function() {
       return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
   }
   
-  var as_walls = function(layout) {
-      var walls = [];
-      var w = size * (size - 1) * 2;
-      for (var i = 0; i < w; i++) {
-          if ((1 << i) & layout) {
-              walls[i] = true;
-          }
+  var wallsToString = function(walls) {
+    var val=0,
+        j = (walls.length-1) % 5,
+        str='';
+    for (var i=walls.length-1; i>=0; i--) {
+       if (walls[i]) {
+          val |= (1 << j);
+       }
+       j--;
+       if (j < 0) {
+          str += val.toString(32);
+          val = 0;
+          j = 4;
+       }
+    }
+    return str;
+  }
+
+  var parseWalls = function(str) {
+      var walls = [],
+          i = str.length,
+          c, j;
+      while(i--) {
+        c = parseInt(str[i], 32);
+        for (j = 0; j < 5; j++) {
+            walls.push(!!(c & (1 << j)));
+        }
       }
       return walls;
   }
@@ -196,14 +216,12 @@ var Burgle = (function() {
       }
   }
   
-  var set_layout = function(id, layout, walls) {
-      if (walls === undefined)
-          walls = as_walls(layout);
+  var set_layout = function(id, walls) {
       var floor = to_floor(walls);
       if (!valid(floor))
           return false;
       var f = document.getElementById(id);
-      f.setAttribute('layout', layout.toString(36));
+      f.setAttribute('layout', wallsToString(walls));
       if (shaft > -1) {
           document.getElementById(id + '_t' + shaft).className = 'shaft';
       }
@@ -269,9 +287,10 @@ var Burgle = (function() {
   		container.appendChild(btn);
   		floorElem.appendChild(container);
   
-          var layout = parseInt(getParameterByName(id), 36);
-          if (layout != 0 && set_layout(id, layout))
-              floor.setAttribute('layout', layout.toString(36));
+          var layout = getParameterByName(id);
+          var walls = parseWalls(layout);
+          if (walls.length != 0)
+            set_layout(id, walls);
       }
       update_href();
   }
@@ -319,19 +338,17 @@ var Burgle = (function() {
           var id = floors[f].getAttribute('id');
           while (true) {
               var wall = permanent_walls.slice();
-              var layout = 0;
               for (var w = 0; w < walls;) {
                   var n = Math.floor(Math.random() * max);
                   if (!wall[n]) {
                       w++;
                       wall[n] = true;
-                      layout |= 1 << n;
                   }
               }
               shaft_walls.forEach(function(w) {
                 wall[w] = false;
               });
-              if (set_layout(id, layout, wall)) {
+              if (set_layout(id, wall)) {
                   break;
               }
           }
@@ -382,7 +399,7 @@ var Burgle = (function() {
       for (var f = 0; f < floors.length; f++) {
           var layout = floors[f].getAttribute('layout');
           if (layout !== null) {
-              set_layout(floors[f].getAttribute('id'), parseInt(layout, 16));
+              set_layout(floors[f].getAttribute('id'), parseWalls(layout));
           }
       }
       update_href();
@@ -393,9 +410,11 @@ var Burgle = (function() {
     generate: generate,
     get_walls: get_walls,
     init: init,
+    parseWalls: parseWalls,
     show_heat: show_heat,
     to_floor: to_floor,
     valid: valid,
+    wallsToString: wallsToString,
     _set: set_dims
   }
 })();
