@@ -99,6 +99,8 @@ var Burgle = (function() {
   }
   
   var update_distance = function(a_ind, b_ind, dist) {
+      if (a_ind === shaft || b_ind === shaft) return;
+
       var a = a_ind * size_sq;
       var b = b_ind * size_sq;
       for (var i = 0; i < size_sq; i++) {
@@ -155,6 +157,8 @@ var Burgle = (function() {
   }
   
   var walk = function(from, to, floor, dist) {
+      if (from === shaft || to === shaft) return;
+
       var min, shortest=[], tile;
   
       function look(dir, neighbor, r) {
@@ -199,8 +203,10 @@ var Burgle = (function() {
           }
       }
       for (i = 0; i < size_sq; i++) {
-          heat = (1.0 - (floor[i].heat - (size_sq - 1)) / 168) * 240;
-          document.getElementById(id + '_t' + i).style.backgroundColor = 'hsl(' + heat + ',100%,50%)';
+          if (i !== shaft) {
+              heat = (1.0 - (floor[i].heat - (size_sq - 1)) / 168) * 240;
+              document.getElementById(id + '_t' + i).style.backgroundColor = 'hsl(' + heat + ',100%,50%)';
+          }
       }
       heat = [];
       for (var y = 0; y < size; y++) {
@@ -399,7 +405,8 @@ var Burgle = (function() {
       for (var f = 0; f < floors.length; f++) {
           var layout = floors[f].getAttribute('layout');
           if (layout !== null) {
-              set_layout(floors[f].getAttribute('id'), parseWalls(layout));
+              var floor = to_floor(walls);
+              generate_heatmap(floors[f].getAttribute('id'), floor);
           }
       }
       update_href();
