@@ -15,7 +15,7 @@ module.exports = function(grunt) {
     },
     uglify: {
       options: {
-        banner: '/*! burgle.js <%= grunt.template.today("yyyy-mm-dd") %> Github: https://github.com/bpa/burgle.git */\n'
+        banner: '/*! burgle.js <%= grunt.template.today("yyyy-mm-dd") %> https://github.com/bpa/burgle */\n'
       },
       build: {
         src: 'js/burgle.js',

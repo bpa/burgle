@@ -422,7 +422,7 @@ var Burgle = (function() {
       for (var f = 0; f < floors.length; f++) {
           var layout = floors[f].getAttribute('layout');
           if (layout !== null) {
-              var floor = to_floor(walls);
+              var floor = to_floor(parseWalls(layout));
               generate_heatmap(floors[f].getAttribute('id'), floor);
           }
       }
