@@ -263,8 +263,8 @@ var Burgle = (function() {
   		var container = document.createElement('div');
   		container.setAttribute('class', 'floorContainer');
   
-          var floor = document.createElement('div');
-  		floor.setAttribute('class', 'floor');
+        var floor = document.createElement('div');
+  		floor.setAttribute('class', (size == 5 ? 'knox' : 'bank') + ' floor');
   		floor.setAttribute('id', id);
           var table = document.createElement('table');
           var wall = 0;
@@ -388,6 +388,7 @@ var Burgle = (function() {
     floors = parseInt(info[0]);
     size = parseInt(info[1]);
     walls = parseInt(info[2]);
+    shaft = -1;
     size_sq = size * size;
     update_dom();
   }
@@ -417,6 +418,7 @@ var Burgle = (function() {
     generate: generate,
     get_walls: get_walls,
     init: init,
+    new_job: new_job,
     parseWalls: parseWalls,
     show_heat: show_heat,
     to_floor: to_floor,
