@@ -208,6 +208,10 @@ var Burgle = (function() {
               document.getElementById(id + '_t' + i).style.backgroundColor = 'hsl(' + heat + ',100%,50%)';
           }
       }
+      if (shaft > -1) {
+        //When regenerating a level and changing the location of the shaft, if there was a heatmap, a backgroundColor will exist for the new location
+        document.getElementById(id + '_t' + shaft).style.backgroundColor = '';
+      }
       heat = [];
       for (var y = 0; y < size; y++) {
           var r = [];
