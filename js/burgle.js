@@ -249,13 +249,19 @@ var Burgle = (function() {
           var heat = document.getElementById('burgle_heat');
           if (heat !== null) heat.checked = heatmap;
       }
+      var haveFloorsInUrl = false;
       var floors = document.getElementsByClassName("floor");
       for (var f = 0; f < floors.length; f++) {
         var layout = getParameterByName(floors[f].getAttribute('id'));
-        if (layout)
+        if (layout) {
             set_layout(floors[f].getAttribute('id'), parseWalls(layout));
+            haveFloorsInUrl = true;
+        }
       }
-      show_heat(heatmap);
+      if (!haveFloorsInUrl)
+        generate();
+      else
+        show_heat(heatmap);
   }
   
   var update_dom = function() {
