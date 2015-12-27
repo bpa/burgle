@@ -241,6 +241,7 @@ var Burgle = (function() {
   var init = function() {
       var j = getParameterByName('job');
       if (j !== "") document.getElementById('job').options[j].selected = true;
+      update_job();
       var s = getParameterByName('s');
       if (s !== "") shaft = parseInt(s, 36);
       if (getParameterByName('heat') !== "") {
@@ -248,7 +249,13 @@ var Burgle = (function() {
           var heat = document.getElementById('burgle_heat');
           if (heat !== null) heat.checked = heatmap;
       }
-      new_job();
+      var floors = document.getElementsByClassName("floor");
+      for (var f = 0; f < floors.length; f++) {
+        var layout = getParameterByName(floors[f].getAttribute('id'));
+        if (layout)
+            set_layout(floors[f].getAttribute('id'), parseWalls(layout));
+      }
+      show_heat(heatmap);
   }
   
   var update_dom = function() {
@@ -292,13 +299,7 @@ var Burgle = (function() {
   		container.appendChild(floor);
   		container.appendChild(btn);
   		floorElem.appendChild(container);
-  
-          var layout = getParameterByName(id);
-          var walls = parseWalls(layout);
-          if (walls.length != 0)
-            set_layout(id, walls);
       }
-      update_href();
   }
   
   var update_href = function() {
@@ -320,21 +321,25 @@ var Burgle = (function() {
   
   var generate = function(id) {
       var floors;
-      if (id === undefined || id === 'all')
-          floors = document.getElementsByClassName("floor");
-      else
-          floors = [document.getElementById(id)];
       var max = 2 * size * (size - 1);
       var permanent_walls = [];
       var shaft_walls = [];
-      if (size === 5) {
-          if (shaft > -1) {
-              for (var f = 0; f < floors.length; f++) {
-                  var id = floors[f].getAttribute('id');
-                  document.getElementById(id + '_t' + shaft).className = 'tile';
+      if (id === undefined || id === 'all') {
+          floors = document.getElementsByClassName("floor");
+          if (size === 5) {
+              if (shaft > -1) {
+                  for (var f = 0; f < floors.length; f++) {
+                      var id = floors[f].getAttribute('id');
+                      document.getElementById(id + '_t' + shaft).className = 'tile';
+                  }
               }
+              shaft = Math.floor(Math.random() * size_sq);
           }
-          shaft = Math.floor(Math.random() * size_sq);
+      }
+      else {
+          floors = [document.getElementById(id)];
+      }
+      if (shaft > -1) {
           shaft_walls = get_walls(shaft);
           shaft_walls.forEach(function(w) {
               permanent_walls[w] = true;
@@ -383,6 +388,11 @@ var Burgle = (function() {
   }
 
   var new_job = function() {
+    update_job();
+    generate();
+  }
+
+  var update_job = function() {
     var j = document.getElementById('job');
     var info = j.options[j.selectedIndex].value.split(":");
     floors = parseInt(info[0]);
