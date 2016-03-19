@@ -1,4 +1,4 @@
-# Burgle
+# Burgle [![Build Status](https://travis-ci.org/bpa/burgle.svg?branch=master)](https://travis-ci.org/bpa/burgle)
 
 Collection of tools and utilities to help gameplay for Burgle Brothers&copy; by Tim Fowers
 
