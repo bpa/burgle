@@ -6,7 +6,12 @@ var Burgle = (function() {
     size = 4,
     walls = 8,
     shaft = -1,
-    size_sq = size * size;
+    size_sq = size * size,
+    default_jobs = [
+      ["703h1", "e0607", "81ll0"],
+      ["190m3", "11hu0"],
+      ["2934c5k0", "611cc425"]
+    ];
 
   var getParameterByName = function(name) {
     name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -407,6 +412,18 @@ var Burgle = (function() {
     generate();
   };
 
+  var default_job = function() {
+    update_job();
+    var job = document.getElementById("job").selectedIndex;
+    shaft = job == 2 ? 12 : -1;
+    var floors = document.getElementsByClassName("floor");
+    for (var f = 0; f < floors.length; f++) {
+      var layout = default_jobs[job][f];
+      set_layout(floors[f].getAttribute("id"), parseWalls(layout));
+    }
+    show_heat(heatmap);
+  };
+
   var update_job = function() {
     var j = document.getElementById("job");
     var info = j.options[j.selectedIndex].value.split(":");
@@ -444,6 +461,7 @@ var Burgle = (function() {
     get_walls: get_walls,
     init: init,
     new_job: new_job,
+    default_job: default_job,
     parseWalls: parseWalls,
     show_heat: show_heat,
     to_floor: to_floor,
