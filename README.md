@@ -4,7 +4,7 @@ Collection of tools and utilities to help gameplay for Burgle Brothers&copy; by 
 
 ## Floor Generator ##
 The primary purpose of this project.  Assists play by generating floors for games.
-Aiming for pure javascript with no dependencies.  Thanks to a contribution (I'll get your name from Tim, I promise) from another player/developer, this can be installed as an app on your phone.
+Aiming for pure javascript with no dependencies.  Thanks to a contribution from another player/developer, this can be installed as an app on your phone.
 
 ### Running
 I'm able to just open the index.html found in the base directory.  If that doesn't work, try nodejs:
