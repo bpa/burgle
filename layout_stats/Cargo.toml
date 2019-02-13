@@ -1,0 +1,7 @@
+[package]
+name = "layout_stats"
+version = "0.1.0"
+authors = ["Bruce Armstrong <bruce@fortressofgeekdom.org>"]
+edition = "2018"
+
+[dependencies]
